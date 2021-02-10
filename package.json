@@ -1,0 +1,16 @@
+{
+  "name": "pornscript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "pornScript.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "vince1444 <vince1444dev@gmail.com> (https://github.com/vince1444)",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "jquery": "^3.5.1",
+    "jsdom": "^16.4.0"
+  }
+}
