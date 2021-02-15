@@ -3,7 +3,7 @@ const axios = require('axios');
 
 
 //tags you're searching for
-const tags = [];
+const tags = ['jav', 'woman'];
 
 //search function to pull data from google
 async function searchForTags(tags, maxPage) {
@@ -12,14 +12,12 @@ async function searchForTags(tags, maxPage) {
     let searchString;
     for (let i = 20; i < maxPage + 1; i++) {
         searchString = createUrl(tags, i);
-        console.log(searchString);
         result = axios.get(searchString).then(res => {
             const data = res.data;
             return cleanData(data);
         }).catch(e => console.log(e));
-        if (!(result === null)) results.push(result);
+        results.push(result);
     }
-    console.log(results.length);
     return Promise.all(results);
 }
 
@@ -45,13 +43,15 @@ function cleanData(raw) {
     const linkLook = 'http';
     const str = raw.substring(raw.indexOf(firstLook));
     const indices = findIndices(linkLook, str);
+    let fnRtn;
+    let str1;
     for (let i = 0; i < indices.length; i++) {
-        let str1 = str.substring(indices[i], indices[i + 1]);
+        str1 = str.substring(indices[i], indices[i + 1]);
         if (bannedLinks.some(ele => { return str1.includes(ele) })) continue;
-        links.push(cleanString(str1, linkLook));
+        fnRtn = cleanString(str1, linkLook);
+        links.push(fnRtn);
     }
-    console.log(links);
-    if (!(links.length == 0)) return links
+    if (typeof links !== undefined) return links;
 }
 
 function findIndices(subStr, fullStr) {
@@ -84,6 +84,8 @@ async function run() {
     const maxPage = 30;
     console.log(`Total pages searching for ${tags}: ${maxPage}`);
     let results = await searchForTags(tags, maxPage);
-    console.log(results);
+    results.forEach(e => {
+        if (e.length !== 0) console.log(e);
+    })
 }
 run();
