@@ -1,20 +1,30 @@
 //imports
 const axios = require('axios');
 
-
+//By default safe mode is off, set to true if you wish
+let safeMode = false;
 //tags you're searching for
-const tags = ['jav', 'woman'];
+const tags = [];
+const entry = {
+    date: new Date(),
+    results: []
+}
 
 //search function to pull data from google
 async function searchForTags(tags, maxPage) {
     const results = [];
     let result;
     let searchString;
-    for (let i = 20; i < maxPage + 1; i++) {
+    let fnRtn;
+    console.log(`Input tags: ${tags}...Going through ${maxPage} pages...`);
+    for (let i = 20; i < maxPage; i++) {
         searchString = createUrl(tags, i);
         result = axios.get(searchString).then(res => {
             const data = res.data;
-            return cleanData(data);
+            fnRtn = cleanData(data);
+            console.log(results.length);
+            if (fnRtn.length == 0) return null;
+            return fnRtn;
         }).catch(e => console.log(e));
         results.push(result);
     }
@@ -64,8 +74,8 @@ function findIndices(subStr, fullStr) {
         //link.com
         //link.com
         //link1.com...etc
-        //at 20th pos, google documentation links so ignore those
-        if (c == 20) break;
+        //at 21st pos, google documentation links so ignore those
+        if (c > 20) break;
         if (c % 2 == 0) {
             indices.push(i);
         }
@@ -81,11 +91,8 @@ function cleanString(str, search) {
 
 //run program
 async function run() {
-    const maxPage = 30;
-    console.log(`Total pages searching for ${tags}: ${maxPage}`);
-    let results = await searchForTags(tags, maxPage);
-    results.forEach(e => {
-        if (e.length !== 0) console.log(e);
-    })
+    const maxPage = 26;
+    let result = await searchForTags(tags, maxPage); 
+    console.log(result);
 }
 run();
