@@ -22,7 +22,6 @@ async function searchForTags(tags, maxPage) {
         result = axios.get(searchString).then(res => {
             const data = res.data;
             fnRtn = cleanData(data);
-            console.log(results.length);
             if (fnRtn.length == 0) return null;
             return fnRtn;
         }).catch(e => console.log(e));
@@ -89,10 +88,17 @@ function cleanString(str, search) {
     return str.substring(str.indexOf(search), str.indexOf('&'));
 }
 
+function display(results) {
+    for(let i = 0; i < results.length; i++) {
+        if (results[i] === null) continue;
+        console.log(results[i]);
+    }
+}
+
 //run program
 async function run() {
     const maxPage = 26;
-    let result = await searchForTags(tags, maxPage); 
-    console.log(result);
+    let results = await searchForTags(tags, maxPage); 
+    display(results);
 }
 run();
