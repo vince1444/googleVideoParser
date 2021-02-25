@@ -1,2 +1,3 @@
-pack-lock.json
-package.json
+.pack-lock.json
+.package.json
+.vscode
