@@ -1,29 +1,25 @@
 //imports
 const axios = require('axios');
 
-//By default safe mode is off, set to true if you wish
-let safeMode = false;
-//tags you're searching for
-const tags = [];
-const entry = {
-    date: new Date(),
-    results: []
-}
-
 //search function to pull data from google
 async function searchForTags(tags, maxPage) {
     const results = [];
     let result;
     let searchString;
     let fnRtn;
+
     console.log(`Input tags: ${tags}...Going through ${maxPage} pages...`);
-    for (let i = 20; i < maxPage; i++) {
+    for (let i = 0; i < maxPage; i++) {
         searchString = createUrl(tags, i);
+        console.log(searchString);
         result = axios.get(searchString).then(res => {
             const data = res.data;
             fnRtn = cleanData(data);
             if (fnRtn.length == 0) return null;
-            return fnRtn;
+            return {
+                page: i + 1,
+                videos: fnRtn
+            };
         }).catch(e => console.log(e));
         results.push(result);
     }
@@ -33,7 +29,7 @@ async function searchForTags(tags, maxPage) {
 function createUrl(tags, page) {
     //10 items per page, first page = 0
     //param = start=10(for second page)
-    page = (page - 1) * 10;
+    page = page * 10;
     let searchString = 'https://www.google.com/search?q='
     tags.forEach(element => {
         if (tags.indexOf(element) == 0) {
@@ -47,7 +43,7 @@ function createUrl(tags, page) {
 function cleanData(raw) {
     const links = [];
     const bannedLinks = ['https://lumendatabase.org/', 'https://www.google.com/', 'https://policies.google.com/', 
-                         'https:)?', 'https://support.google.com/'];
+                         'https:)?', 'https://support.google.com/', 'https://www.youtube.com/'];
     const firstLook = 'var a=document.getElementById("st-toggle")';
     const linkLook = 'http';
     const str = raw.substring(raw.indexOf(firstLook));
@@ -56,7 +52,7 @@ function cleanData(raw) {
     let str1;
     for (let i = 0; i < indices.length; i++) {
         str1 = str.substring(indices[i], indices[i + 1]);
-        if (bannedLinks.some(ele => { return str1.includes(ele) })) continue;
+        if (bannedLinks.some(e => { return str1.includes(e) })) continue;
         fnRtn = cleanString(str1, linkLook);
         links.push(fnRtn);
     }
@@ -95,10 +91,9 @@ function display(results) {
     }
 }
 
-//run program
-async function run() {
-    const maxPage = 26;
-    let results = await searchForTags(tags, maxPage); 
-    display(results);
+module.exports = {
+    searchForTags,
+    display
 }
-run();
+
+

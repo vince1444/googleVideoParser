@@ -10,7 +10,9 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.1",
+    "firebase": "^8.2.9",
     "jquery": "^3.5.1",
-    "jsdom": "^16.4.0"
+    "jsdom": "^16.4.0",
+    "mongoose": "^5.11.18"
   }
 }

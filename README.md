@@ -1,8 +1,8 @@
 # About
-A program that parses videos through Google based on tags. Filters out any DMCA/Google Support/Policy links. Only supplies you with video links. 
+A program that parses videos through Google based on tags. Filters out any DMCA/Google Support/Policy links. 
 
 # Current Implementation
-Returns http/https video links found through Google. 
+Returns http/https video links found through Google. Added firebase database support.
 
 # Future Implementations
-Will add Firebase support to send links to database and add automatic gathering and processing.
+Implement machine learning and enhance backend logic to only parse useable links.
