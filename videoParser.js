@@ -9,7 +9,7 @@ async function searchForTags(tags, maxPage) {
     let fnRtn;
 
     console.log(`Input tags: ${tags}...Going through ${maxPage} pages...`);
-    for (let i = 0; i < maxPage; i++) {
+    for (let i = 8; i < maxPage; i++) {
         searchString = createUrl(tags, i);
         console.log(searchString);
         result = axios.get(searchString).then(res => {
@@ -43,20 +43,32 @@ function createUrl(tags, page) {
 function cleanData(raw) {
     const links = [];
     const bannedLinks = ['https://lumendatabase.org/', 'https://www.google.com/', 'https://policies.google.com/', 
-                         'https:)?', 'https://support.google.com/', 'https://www.youtube.com/'];
+                         'https:)?', 'https://support.google.com/', 'https://www.youtube.com/', 'facebook.com'];
     const firstLook = 'var a=document.getElementById("st-toggle")';
     const linkLook = 'http';
     const str = raw.substring(raw.indexOf(firstLook));
     const indices = findIndices(linkLook, str);
     let fnRtn;
     let str1;
+    let duration;
     for (let i = 0; i < indices.length; i++) {
         str1 = str.substring(indices[i], indices[i + 1]);
         if (bannedLinks.some(e => { return str1.includes(e) })) continue;
+        duration = findDuration(str1);
         fnRtn = cleanString(str1, linkLook);
-        links.push(fnRtn);
+        links.push({
+            link: fnRtn,
+            duration: duration
+        });
     }
     if (typeof links !== undefined) return links;
+}
+
+function findDuration(str) {
+    //duration + 10 gives just the number
+    if (str.includes('Duration:')) {
+        return str.substring(str.indexOf('Duration:') + 10, str.indexOf('\n'));
+    }
 }
 
 function findIndices(subStr, fullStr) {
